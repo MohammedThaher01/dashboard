@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<select id="etype">
+  <option value="click">click</option>
+  <option value="view">view</option>
+  <option value="open">open</option>
+</select>
+<button id="btn">Send Event</button>
+<div id="stats"></div>
+
+<script>
+function updateStats() {
+  fetch('/stats')
+    .then(r => r.json())
+    .then(data => {
+      const container = document.getElementById('stats');
+      container.innerHTML = '';
+      data.forEach(item => {
+        const p = document.createElement('p');
+        p.innerText = item.type + ': ' + item.count;
+        container.appendChild(p);
+      });
+    });
+}
+document.getElementById('btn').onclick = function() {
+  const t = document.getElementById('etype').value;
+  fetch('/event', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({type: t})
+  }).then(updateStats);
+};
+setInterval(updateStats, 2000);
+updateStats();
+</script>
+</body>
+</html>
