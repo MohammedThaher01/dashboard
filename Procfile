@@ -1,1 +1,1 @@
-web: gunicorn major.wsgi
+web: gunicorn major.major.wsgi
