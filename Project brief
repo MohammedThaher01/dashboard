@@ -1,0 +1,35 @@
+System: Micro Event Analytics
+
+Goal:
+Capture and aggregate user interaction events with minimal overhead. Output must be queryable and observable in real time.
+
+Core Model:
+Event(type: string, timestamp: auto, metadata: json)
+
+Key Operations:
+record_event:
+- Input: JSON with field "type"
+- Action: Insert into Event table
+- Output: status confirmation
+
+get_stats:
+- Input: none
+- Aggregation: COUNT(*) grouped by type
+- Output: list of {type, count}
+
+Frontend Behavior:
+- Static HTML served via template
+- Dropdown selects event type
+- Button dispatches event using fetch()
+- setInterval polls /stats and updates DOM
+
+Data Flow:
+User → Browser → fetch POST /event → Django → SQLite
+Browser → fetch GET /stats → DOM rewrite
+
+Tradeoffs:
+No batching, no async queue, no stream processor
+Deliberate simplicity for clarity of ownership
+
+Expansion Paths:
+Pagination, time-based filters, persistent dashboards, WebSocket streaming
